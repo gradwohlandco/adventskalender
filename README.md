@@ -54,4 +54,4 @@ Alle 24 Geschichten befinden sich in `js/stories.js` – einfach Titel und Text 
 
 ## Lizenz
 
-MIT
+MIT License
