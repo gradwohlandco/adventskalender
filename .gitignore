@@ -1,0 +1,26 @@
+# macOS Systemdateien
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# Icon muss weg
+Icon?
+
+# Thumbnails
+._*
+
+# Dateien, die auf externen Volumes erstellt werden
+.Spotlight-V100
+.Trashes
+
+# Editor (VS Code etc.)
+.vscode/
+.idea/
+
+# Logs
+*.log
+
+# Node (falls du JS nutzt)
+node_modules/
+dist/
+.env

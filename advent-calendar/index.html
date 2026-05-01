@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Adventskalender</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=Lora:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+
+  <!-- Snow canvas -->
+  <canvas id="snow"></canvas>
+
+  <!-- Stars background -->
+  <div class="stars" id="stars"></div>
+
+  <!-- Header -->
+  <header class="site-header">
+    <div class="header-decoration">✦</div>
+    <h1 class="site-title">Adventskalender</h1>
+    <p class="site-subtitle">Öffne jeden Tag ein Türchen</p>
+    <div class="header-decoration">✦</div>
+  </header>
+
+  <!-- Countdown (non-December) -->
+  <div id="countdown-section" class="countdown-section hidden">
+    <div class="countdown-card">
+      <div class="countdown-icon">🎄</div>
+      <h2 class="countdown-title">Noch nicht ganz Zeit …</h2>
+      <p class="countdown-sub">Der Kalender öffnet sich am 1. Dezember</p>
+      <div class="countdown-number" id="countdown-days">—</div>
+      <p class="countdown-label">Tage bis zum Advent</p>
+    </div>
+  </div>
+
+  <!-- Calendar grid -->
+  <main class="calendar-wrapper">
+    <div class="calendar" id="calendar"></div>
+  </main>
+
+  <!-- Modal -->
+  <div id="modal" class="modal hidden" role="dialog" aria-modal="true">
+    <div class="modal-backdrop"></div>
+    <div class="modal-card">
+      <button class="modal-close" id="modal-close" aria-label="Schließen">✕</button>
+      <div class="modal-candle">🕯️</div>
+      <div class="modal-day" id="modal-day">Tag 1</div>
+      <h2 class="modal-title" id="modal-title"></h2>
+      <div class="modal-divider"><span>✦</span></div>
+      <p class="modal-text" id="modal-text"></p>
+      <div class="modal-footer">
+        <span class="modal-snowflake">❄</span>
+        <span class="modal-snowflake">❄</span>
+        <span class="modal-snowflake">❄</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast notification -->
+  <div id="toast" class="toast hidden"></div>
+
+  <script src="js/stories.js"></script>
+  <script src="js/script.js"></script>
+</body>
+</html>
