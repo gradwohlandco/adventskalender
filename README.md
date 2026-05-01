@@ -4,9 +4,10 @@ Ein wiederverwendbarer digitaler Adventskalender – nur HTML, CSS und JavaScrip
 
 ## Features
 
-- 24 Türchen, die täglich ab dem 1. Dezember freigeschalten werden
+- 24 Türchen, die täglich ab dem 1. Dezember freigeschaltet werden
 - Außerhalb des Dezembers: freundlicher Countdown-Bildschirm
 - Geöffnete Türchen bleiben über `localStorage` gespeichert (auch nach Reload)
+- `localStorage` ist jahresgebunden – Türchen werden jedes Jahr automatisch zurückgesetzt
 - Jedes Türchen zeigt eine eigene, gemütliche Weihnachtsgeschichte
 - 3D-Flip-Animation beim Öffnen
 - Fallender Schnee & funkelnde Sterne im Hintergrund
@@ -42,11 +43,12 @@ Alle Türchen unabhängig vom Datum öffnen:
 index.html?admin
 ```
 
-Nützlich zum Testen oder Vorschauen.
+- Nützlich zum Testen oder Vorschauen
+- Im Admin-Modus wird **nichts in `localStorage` gespeichert** – alle Türchen starten immer frisch
 
 ## Jedes Jahr wiederverwendbar
 
-Der Kalender erkennt automatisch den Monat. Im Dezember wird der Kalender aktiv, in allen anderen Monaten erscheint der Countdown. Die Türchen werden jedes Jahr neu gemischt (deterministisch nach Jahr). `localStorage` lässt sich über den Browser-Inspektor zurücksetzen oder man ergänzt einen Reset-Button.
+Der Kalender erkennt automatisch den Monat. Im Dezember wird der Kalender aktiv, in allen anderen Monaten erscheint der Countdown. Die Türchen werden jedes Jahr neu gemischt (deterministisch nach Jahr). Der `localStorage`-Key enthält das aktuelle Jahr (`ac_opened_YYYY`), sodass die Türchen am 1. Dezember jedes Jahr automatisch zurückgesetzt werden – ohne manuellen Eingriff.
 
 ## Inhalte anpassen
 
