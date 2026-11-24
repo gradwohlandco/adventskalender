@@ -4,26 +4,53 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Adventskalender</title>
+  <meta name="description" content="Ein moderner, animierter digitaler Adventskalender" />
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=Lora:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="css/style.css" />
 </head>
 <body>
 
+  <!-- Ambient aurora glow -->
+  <div class="aurora" aria-hidden="true">
+    <span class="aurora-blob b1"></span>
+    <span class="aurora-blob b2"></span>
+    <span class="aurora-blob b3"></span>
+  </div>
+
   <!-- Snow canvas -->
-  <canvas id="snow"></canvas>
+  <canvas id="snow" aria-hidden="true"></canvas>
 
   <!-- Stars background -->
-  <div class="stars" id="stars"></div>
+  <div class="stars" id="stars" aria-hidden="true"></div>
+
+  <!-- Theme toggle -->
+  <button class="theme-toggle" id="theme-toggle" aria-label="Theme umschalten">
+    <span class="theme-icon theme-icon-sun">☀</span>
+    <span class="theme-icon theme-icon-moon">☾</span>
+  </button>
+
+  <!-- Admin badge -->
+  <div class="admin-badge hidden" id="admin-badge">Admin-Modus</div>
 
   <!-- Header -->
   <header class="site-header">
-    <div class="header-decoration">✦</div>
-    <h1 class="site-title">Adventskalender</h1>
-    <p class="site-subtitle">Öffne jeden Tag ein Türchen</p>
-    <div class="header-decoration">✦</div>
+    <div class="header-badge">✦ 1.–24. Dezember</div>
+    <h1 class="site-title">Advents<span class="site-title-accent">kalender</span></h1>
+    <p class="site-subtitle">Jeden Tag ein neues Türchen, eine neue kleine Geschichte</p>
   </header>
+
+  <!-- Progress -->
+  <div class="progress-section" id="progress-section">
+    <div class="progress-row">
+      <span class="progress-label">Fortschritt</span>
+      <span class="progress-count"><span id="progress-opened">0</span>/24 geöffnet</span>
+    </div>
+    <div class="progress-track">
+      <div class="progress-fill" id="progress-fill"></div>
+    </div>
+  </div>
 
   <!-- Countdown (non-December) -->
   <div id="countdown-section" class="countdown-section hidden">
@@ -46,16 +73,11 @@
     <div class="modal-backdrop"></div>
     <div class="modal-card">
       <button class="modal-close" id="modal-close" aria-label="Schließen">✕</button>
-      <div class="modal-candle">🕯️</div>
-      <div class="modal-day" id="modal-day">Tag 1</div>
+      <div class="modal-glow"></div>
+      <div class="modal-day-badge" id="modal-day">Tag 1</div>
       <h2 class="modal-title" id="modal-title"></h2>
-      <div class="modal-divider"><span>✦</span></div>
+      <div class="modal-divider"></div>
       <p class="modal-text" id="modal-text"></p>
-      <div class="modal-footer">
-        <span class="modal-snowflake">❄</span>
-        <span class="modal-snowflake">❄</span>
-        <span class="modal-snowflake">❄</span>
-      </div>
     </div>
   </div>
 
