@@ -9,9 +9,15 @@ const modalTitle = document.getElementById('modal-title');
 const modalText = document.getElementById('modal-text');
 const modalClose = document.getElementById('modal-close');
 const toast = document.getElementById('toast');
+const themeToggle = document.getElementById('theme-toggle');
+const adminBadge = document.getElementById('admin-badge');
+const progressSection = document.getElementById('progress-section');
+const progressFill = document.getElementById('progress-fill');
+const progressOpened = document.getElementById('progress-opened');
 
 // ─── Helpers ────────────────────────────────────────────────────────────────
 const STORAGE_KEY = `ac_opened_${new Date().getFullYear()}`;
+const THEME_KEY = 'ac_theme';
 
 function getOpened() {
   if (isAdmin()) return [];
@@ -40,6 +46,30 @@ function daysUntilDec() {
   return Math.ceil((dec1 - now) / 86_400_000);
 }
 
+// ─── Theme ───────────────────────────────────────────────────────────────────
+
+function initTheme() {
+  const stored = localStorage.getItem(THEME_KEY);
+  const prefersLight = window.matchMedia('(prefers-color-scheme: light)').matches;
+  const theme = stored || (prefersLight ? 'light' : 'dark');
+  applyTheme(theme);
+
+  themeToggle.addEventListener('click', () => {
+    const current = document.documentElement.getAttribute('data-theme') === 'light' ? 'light' : 'dark';
+    const next = current === 'light' ? 'dark' : 'light';
+    applyTheme(next);
+    localStorage.setItem(THEME_KEY, next);
+  });
+}
+
+function applyTheme(theme) {
+  if (theme === 'light') {
+    document.documentElement.setAttribute('data-theme', 'light');
+  } else {
+    document.documentElement.removeAttribute('data-theme');
+  }
+}
+
 // ─── Toast ───────────────────────────────────────────────────────────────────
 
 function showToast(msg) {
@@ -56,7 +86,7 @@ function showToast(msg) {
 
 function openModal(num) {
   const story = STORIES[num - 1] || { title: `Tag ${num}`, text: '' };
-  modalDay.textContent = `✦ ${num}. Dezember ✦`;
+  modalDay.textContent = `${num}. Dezember`;
   modalTitle.textContent = story.title;
   modalText.textContent = story.text;
   modal.classList.remove('hidden');
@@ -80,12 +110,23 @@ document.addEventListener('keydown', e => {
   if (e.key === 'Escape') closeModal();
 });
 
+// ─── Progress ────────────────────────────────────────────────────────────────
+
+function updateProgress(opened) {
+  const count = opened.length;
+  progressOpened.textContent = count;
+  progressFill.style.width = `${(count / 24) * 100}%`;
+}
+
 // ─── Calendar Build ──────────────────────────────────────────────────────────
 
 function buildCalendar() {
   const opened = getOpened();
   const day = isDecember() ? todayDay() : 0;
   const admin = isAdmin();
+
+  if (admin) adminBadge.classList.remove('hidden');
+  updateProgress(opened);
 
   // Shuffle door order for a non-linear layout (deterministic per year)
   const seed = new Date().getFullYear();
@@ -97,7 +138,7 @@ function buildCalendar() {
 
     const door = document.createElement('div');
     door.className = 'door';
-    door.style.animationDelay = `${idx * 40}ms`;
+    door.style.animationDelay = `${idx * 30}ms`;
     if (alreadyOpen) door.classList.add('is-open');
     if (!unlocked) door.classList.add('is-locked');
 
@@ -111,7 +152,6 @@ function buildCalendar() {
           <span class="door-back-icon">🎄</span>
         </div>
       </div>
-      <div class="door-glow"></div>
     `;
 
     door.addEventListener('click', () => {
@@ -124,7 +164,8 @@ function buildCalendar() {
       // Mark opened
       if (!alreadyOpen) {
         opened.push(num);
-        saveOpened(opened);
+        if (!admin) saveOpened(opened);
+        updateProgress(opened);
         door.classList.add('is-open');
         door.classList.add('just-opened');
         spawnParticles(door);
@@ -160,19 +201,20 @@ function spawnParticles(el) {
   const rect = el.getBoundingClientRect();
   const cx = rect.left + rect.width / 2;
   const cy = rect.top + rect.height / 2;
-  const emojis = ['❄️', '✨', '🌟', '⭐', '❅'];
-  for (let i = 0; i < 8; i++) {
+  const colors = ['#6366f1', '#a855f7', '#22d3ee', '#f5c84c'];
+  const count = 12;
+  for (let i = 0; i < count; i++) {
     const p = document.createElement('div');
     p.className = 'particle';
-    p.textContent = emojis[Math.floor(Math.random() * emojis.length)];
-    const angle = (360 / 8) * i * (Math.PI / 180);
-    const dist = 50 + Math.random() * 40;
+    p.style.background = colors[i % colors.length];
+    const angle = (360 / count) * i * (Math.PI / 180);
+    const dist = 60 + Math.random() * 50;
     p.style.left = `${cx}px`;
     p.style.top = `${cy}px`;
     p.style.setProperty('--tx', `${Math.cos(angle) * dist}px`);
     p.style.setProperty('--ty', `${Math.sin(angle) * dist}px`);
     document.body.appendChild(p);
-    setTimeout(() => p.remove(), 900);
+    setTimeout(() => p.remove(), 850);
   }
 }
 
@@ -189,21 +231,24 @@ function initSnow() {
   resize();
   window.addEventListener('resize', resize);
 
-  const flakes = Array.from({ length: 120 }, () => ({
+  const flakes = Array.from({ length: 90 }, () => ({
     x: Math.random() * canvas.width,
     y: Math.random() * canvas.height,
-    r: Math.random() * 2.5 + 0.5,
+    r: Math.random() * 2.2 + 0.5,
     speed: Math.random() * 0.6 + 0.2,
     drift: (Math.random() - 0.5) * 0.3,
-    opacity: Math.random() * 0.5 + 0.2
+    opacity: Math.random() * 0.4 + 0.15
   }));
 
   function draw() {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
+    const light = document.documentElement.getAttribute('data-theme') === 'light';
     flakes.forEach(f => {
       ctx.beginPath();
       ctx.arc(f.x, f.y, f.r, 0, Math.PI * 2);
-      ctx.fillStyle = `rgba(255,255,255,${f.opacity})`;
+      ctx.fillStyle = light
+        ? `rgba(90,90,120,${f.opacity})`
+        : `rgba(255,255,255,${f.opacity})`;
       ctx.fill();
       f.y += f.speed;
       f.x += f.drift;
@@ -220,7 +265,7 @@ function initSnow() {
 
 function initStars() {
   const container = document.getElementById('stars');
-  for (let i = 0; i < 80; i++) {
+  for (let i = 0; i < 70; i++) {
     const s = document.createElement('span');
     s.className = 'star';
     s.style.left = `${Math.random() * 100}%`;
@@ -236,12 +281,14 @@ function initStars() {
 // ─── Init ─────────────────────────────────────────────────────────────────────
 
 function init() {
+  initTheme();
   initStars();
   initSnow();
 
   if (!isDecember() && !isAdmin()) {
     countdownDay.textContent = daysUntilDec();
     countdownSec.classList.remove('hidden');
+    progressSection.classList.add('hidden');
   }
 
   buildCalendar();
